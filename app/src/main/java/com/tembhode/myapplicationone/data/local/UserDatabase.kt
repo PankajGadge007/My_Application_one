@@ -14,18 +14,24 @@ abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
     companion object {
+
+        @Volatile
         var instance: UserDatabase? = null
 
         fun getDatabase(context: Context): UserDatabase {
-            val tempObj = instance
-            if (tempObj != null) {
-                return tempObj
+            // thread-safe
+            return instance ?: synchronized(this) {
+                // if instance is not null, then return it,
+                // if it is null, then create the database instance
+                val tempObj = Room.databaseBuilder(
+                    context.applicationContext,
+                    UserDatabase::class.java,
+                    "user_database"
+                ).build()
+                instance = tempObj
+                // return instance
+                tempObj
             }
-
-            val tempInstance =
-                Room.databaseBuilder(context, UserDatabase::class.java, "user_database").build()
-            instance = tempInstance
-            return tempInstance
         }
     }
 }
