@@ -1,6 +1,7 @@
 package com.tembhode.myapplicationone.data
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.tembhode.myapplicationone.data.local.UserDao
 import com.tembhode.myapplicationone.data.local.UserDatabase
@@ -9,7 +10,7 @@ import com.tembhode.myapplicationone.models.User
 /**
  * Created by Pankaj Gadge on 10/14/2021.
  */
-class UserDataRepository constructor(application: Application) {
+class UserDataRepository constructor(application: Context) {
     private var userDao: UserDao
     private var database: UserDatabase
 
@@ -18,8 +19,8 @@ class UserDataRepository constructor(application: Application) {
         userDao = database.userDao()
     }
 
-    fun insertUser(user: User) {
-        userDao.insertUser(user)
+    fun insertUser(user: User): Long {
+        return userDao.insertUser(user)
     }
 
     fun updateUser(user: User) {

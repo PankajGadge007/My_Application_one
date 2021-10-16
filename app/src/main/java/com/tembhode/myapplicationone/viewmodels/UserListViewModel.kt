@@ -1,7 +1,8 @@
 package com.tembhode.myapplicationone.viewmodels
 
 import androidx.lifecycle.ViewModel
+import com.tembhode.myapplicationone.data.UserDataRepository
 
-class UserListViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class UserListViewModel(userDataRepository: UserDataRepository) : ViewModel() {
+
 }

@@ -9,5 +9,14 @@
         android:id="@+id/mainFragment"
         android:name="com.tembhode.myapplicationone.ui.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment" />
+        tools:layout="@layout/main_fragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_userListFragment"
+            app:destination="@id/userListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.tembhode.myapplicationone.ui.UserListFragment"
+        android:label="user_list_fragment"
+        tools:layout="@layout/user_list_fragment" />
 </navigation>

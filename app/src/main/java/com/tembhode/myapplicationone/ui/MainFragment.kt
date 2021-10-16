@@ -1,6 +1,5 @@
 package com.tembhode.myapplicationone.ui
 
-import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+
+import com.google.android.material.snackbar.Snackbar
 import com.tembhode.myapplicationone.R
 import com.tembhode.myapplicationone.data.UserDataRepository
-import com.tembhode.myapplicationone.data.local.UserDatabase
 import com.tembhode.myapplicationone.databinding.MainFragmentBinding
 import com.tembhode.myapplicationone.models.User
 import com.tembhode.myapplicationone.viewmodels.MainViewModel
@@ -24,6 +26,7 @@ class MainFragment : Fragment() {
 //        fun newInstance() = MainFragment()
 //    }
 
+    private lateinit var navController: NavController
     private lateinit var userDataRepository: UserDataRepository
     private lateinit var mContext: Context
     private var _binding: MainFragmentBinding? = null
@@ -40,16 +43,18 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
-        userDataRepository= UserDataRepository(Application())
+        userDataRepository = UserDataRepository(mContext)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = MyVMFactory(userDataRepository).create(MainViewModel::class.java)
+        navController  = findNavController()
+
         val booksList = resources.getStringArray(R.array.books_string_array)
         val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, booksList)
+            ArrayAdapter(mContext, android.R.layout.simple_spinner_item, booksList)
 
         binding.buttonAddUser.setOnClickListener {
             val userName = binding.etUserName.text?.trim().toString()
@@ -63,11 +68,20 @@ class MainFragment : Fragment() {
 
         }
         binding.buttonViewAll.setOnClickListener {
-
+            navController.navigate(R.id.userListFragment)
         }
 
         binding.spinnerBooks.adapter = adapter
 
+        //Observer
+        viewModel.isInserted.observe(viewLifecycleOwner, Observer {
+//            Log.e("TAGTAG", "onViewCreated: isInserted=$it" )
+            if (it > 0) {
+                // navigate to UsersList page / Show dialog
+                Snackbar.make(view, "User added successfully..", Snackbar.LENGTH_SHORT).show()
+                binding.buttonViewAll.isEnabled = true
+            }
+        })
     }
 
 }

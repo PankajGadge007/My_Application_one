@@ -11,6 +11,8 @@ class MyVMFactory(private val userDataRepository: UserDataRepository) : ViewMode
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(userDataRepository) as T
+        } else if (modelClass.isAssignableFrom(UserListViewModel::class.java)) {
+            return UserListViewModel(userDataRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

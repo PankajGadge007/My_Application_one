@@ -1,6 +1,5 @@
 package com.tembhode.myapplicationone.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.tembhode.myapplicationone.models.User
 
@@ -9,8 +8,8 @@ import com.tembhode.myapplicationone.models.User
  */
 @Dao
 interface UserDao {
-    @Insert
-    fun insertUser(user: User)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(user: User):Long
 
     @Update
     fun updateUser(user: User)
