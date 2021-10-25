@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.google.android.material.snackbar.Snackbar
 import com.tembhode.myapplicationone.R
+import com.tembhode.myapplicationone.adapters.UsersListAdapter
 import com.tembhode.myapplicationone.data.UserDataRepository
 import com.tembhode.myapplicationone.databinding.MainFragmentBinding
 import com.tembhode.myapplicationone.models.User
@@ -50,7 +51,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = MyVMFactory(userDataRepository).create(MainViewModel::class.java)
-        navController  = findNavController()
+        navController = findNavController()
 
         val booksList = resources.getStringArray(R.array.books_string_array)
         val adapter =
@@ -73,7 +74,12 @@ class MainFragment : Fragment() {
 
         binding.spinnerBooks.adapter = adapter
 
+        viewModel.getUsers()
+
         //Observer
+        viewModel.allUserList.observe(viewLifecycleOwner, Observer { list ->
+            binding.buttonViewAll.isEnabled = list.isNotEmpty()
+        })
         viewModel.isInserted.observe(viewLifecycleOwner, Observer {
 //            Log.e("TAGTAG", "onViewCreated: isInserted=$it" )
             if (it > 0) {

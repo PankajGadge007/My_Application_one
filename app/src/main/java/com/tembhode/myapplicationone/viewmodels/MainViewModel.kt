@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(var userDataRepository: UserDataRepository) : ViewModel() {
 
-    private var allUserList = MutableLiveData<List<User>>()
+    var allUserList = MutableLiveData<List<User>>()
     var isInserted = MutableLiveData<Long>()
 
     fun insertData(user: User) {
@@ -24,21 +24,18 @@ class MainViewModel(var userDataRepository: UserDataRepository) : ViewModel() {
     private suspend fun insertUser(user: User): Long =
         withContext(Dispatchers.IO) {
             return@withContext userDataRepository.insertUser(user)
-    }
+        }
 
-    fun updateData(user: User) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userDataRepository.updateUser(user)
+    fun getUsers() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val idLong = getUserList()
+            allUserList.value = idLong
         }
     }
 
-    fun deleteData(user: User) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userDataRepository.deleteUser(user)
+    private suspend fun getUserList(): List<User> =
+        withContext(Dispatchers.IO) {
+            return@withContext userDataRepository.getAllUser()
         }
-    }
 
-    fun getUsersList() {
-        allUserList.value = userDataRepository.getAllUser()
-    }
 }
