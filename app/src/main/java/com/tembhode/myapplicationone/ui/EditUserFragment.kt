@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -27,8 +29,10 @@ class EditUserFragment : Fragment() {
 
     companion object {
         fun newInstance() = EditUserFragment()
+        var msg = ""
     }
 
+    private lateinit var booksList: Array<String>
     private lateinit var user: User
     private lateinit var mContext: Context
     private lateinit var viewModel: EditUserViewModel
@@ -58,7 +62,7 @@ class EditUserFragment : Fragment() {
         viewModel = MyVMFactory(userDataRepository).create(EditUserViewModel::class.java)
         navController = findNavController()
 
-        val booksList = resources.getStringArray(R.array.books_string_array)
+        booksList = resources.getStringArray(R.array.books_string_array)
         val adapter =
             ArrayAdapter(mContext, android.R.layout.simple_spinner_item, booksList)
 
@@ -75,13 +79,17 @@ class EditUserFragment : Fragment() {
 
             //Log.e("TAGTAG", "onAddClick: $userName, $mobile, $book")
 
-            val user = User().also {
-                it.id = user.id
-                it.name = userName
-                it.mobile = mobile
-                it.book = book
+            if (isValidData(userName, mobile, book)) {
+                val user = User().also {
+                    it.id = user.id
+                    it.name = userName
+                    it.mobile = mobile
+                    it.book = book
+                }
+                viewModel.updateData(user)
+            } else {
+                Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show()
             }
-            viewModel.updateData(user)
         }
 
         viewModel.isUpdatDone.observe(viewLifecycleOwner, Observer {
@@ -90,6 +98,21 @@ class EditUserFragment : Fragment() {
             Snackbar.make(view, "User updated successfully..", Snackbar.LENGTH_SHORT).show()
             navController.popBackStack()
         })
+    }
+
+    private fun isValidData(userName: String, mobile: String, book: String?): Boolean {
+        var vv = false
+        if (userName.trim().isEmpty()) {
+            msg = "Please enter proper name."
+            return vv
+        } else if (mobile.length!=10) {
+            msg = "Please enter valid mobile number."
+            return vv
+        } else if (book.contentEquals(booksList[0])) {
+            EditUserFragment.msg = "Please select book."
+            return vv
+        }
+        return true
     }
 
 
