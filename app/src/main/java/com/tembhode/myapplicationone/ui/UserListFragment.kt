@@ -9,8 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tembhode.myapplicationone.R
 import com.tembhode.myapplicationone.adapters.UsersListAdapter
 import com.tembhode.myapplicationone.data.UserDataRepository
 import com.tembhode.myapplicationone.databinding.UserListFragmentBinding
@@ -24,6 +27,7 @@ class UserListFragment : Fragment(), UsersListAdapter.UserListListener {
     private var _binding: UserListFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: UserListViewModel
+    private lateinit var navController: NavController
     private lateinit var userDataRepository: UserDataRepository
     private lateinit var mContext: Context
 
@@ -44,6 +48,7 @@ class UserListFragment : Fragment(), UsersListAdapter.UserListListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = MyVMFactory(userDataRepository).create(UserListViewModel::class.java)
+        navController = findNavController()
 
         binding.rvUsersList.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -65,7 +70,10 @@ class UserListFragment : Fragment(), UsersListAdapter.UserListListener {
     }
 
     override fun onEditClick(u: User) {
-        Toast.makeText(mContext, "Edit ${u.name}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(mContext, "Edit ${u.name}", Toast.LENGTH_SHORT).show()
+        val b = Bundle()
+        b.putSerializable("user",u)
+        navController.navigate(R.id.editUserFragment, b)
     }
 
 }

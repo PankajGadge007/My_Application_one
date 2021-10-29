@@ -64,7 +64,11 @@ class MainFragment : Fragment() {
 
             Log.e("TAGTAG", "onAddClick: $userName, $mobile, $book")
 
-            val user = User(userName, mobile, book)
+            val user = User().also {
+                it.name = userName
+                it.mobile = mobile
+                it.book = book
+            }
             viewModel.insertData(user)
 
         }

@@ -23,7 +23,7 @@ class UserDataRepository constructor(application: Context) {
         return userDao.insertUser(user)
     }
 
-    fun updateUser(user: User) {
+    fun updateUser(user: User){
         userDao.updateUser(user)
     }
 

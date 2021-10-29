@@ -13,6 +13,8 @@ class MyVMFactory(private val userDataRepository: UserDataRepository) : ViewMode
             return MainViewModel(userDataRepository) as T
         } else if (modelClass.isAssignableFrom(UserListViewModel::class.java)) {
             return UserListViewModel(userDataRepository) as T
+        } else if (modelClass.isAssignableFrom(EditUserViewModel::class.java)) {
+            return EditUserViewModel(userDataRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

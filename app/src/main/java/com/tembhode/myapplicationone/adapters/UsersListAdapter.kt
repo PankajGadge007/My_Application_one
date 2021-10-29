@@ -49,12 +49,11 @@ class UsersListAdapter(var list: ArrayList<User>, var mListener: UserListListene
         holder.icDelete.setOnClickListener {
             mListener.onDeleteClick(user, position)
             list.removeAt(position)
-            notifyItemRemoved(position)
+            notifyDataSetChanged()
         }
         holder.icEdit.setOnClickListener {
             mListener.onEditClick(user)
         }
-
     }
 
     override fun getItemCount(): Int {

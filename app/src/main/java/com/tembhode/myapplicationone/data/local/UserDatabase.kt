@@ -9,7 +9,7 @@ import com.tembhode.myapplicationone.models.User
 /**
  * Created by Pankaj Gadge on 10/14/2021.
  */
-@Database(entities = [User::class], version = 1)
+@Database(entities = [User::class], version = 2)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -27,7 +27,7 @@ abstract class UserDatabase : RoomDatabase() {
                     context.applicationContext,
                     UserDatabase::class.java,
                     "user_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 instance = tempObj
                 // return instance
                 tempObj
